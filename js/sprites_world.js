@@ -8,15 +8,15 @@
     // outline and grass
     'o': '#3b2a20', 'g': '#5fa83a', 'G': '#4a8a2c', 'l': '#7cc350', 'T': '#2f6b24',
     // flowers, fruit and accents
-    'w': '#fff7e6', 'y': '#f5d142', 'r': '#b8382c', '&': '#f08a24', '%': '#8a5cb3',
+    'w': '#fff7e6', 'y': '#f5d142', 'r': '#b8382c', '&': '#f08a24', '%': '#8a5cb3', 'X': '#c8661c',
     // path
     'a': '#e3c08c', 'b': '#c9a06a', 'c': '#a77d4c', 's': '#8a6238', 'p': '#efd9ae',
     // untilled soil
     'e': '#94643f', 'f': '#b07c52', 'h': '#6e4628',
     // tilled soil
-    'u': '#5a3a22', 'v': '#3a2516', 'x': '#7a5230',
+    'u': '#5a3a22', 'v': '#3a2516', 'x': '#7a5230', 'L': '#8f6440',
     // watered soil
-    'm': '#4b2f1c', 'n': '#2f1d11', 'z': '#6a4a33',
+    'm': '#4b2f1c', 'n': '#2f1d11', 'z': '#6a4a33', 'd': '#5f3f26',
     // water
     'W': '#3d8fd6', 'I': '#8fd3f5', 'D': '#2a6aa8',
     // straw and hay, wheat
@@ -99,16 +99,19 @@
       }
     }
   }
-  // Plowed earth: 4-row bands (2 base, dark furrow, light ridge). Repeats every 4 rows, so it tiles.
-  function furrows(g, base, dark, light, speck, rate) {
+  // Plowed earth: ridge k has a light edge row and a dark shadow row below it, both inside rows 4k..4k+3.
+  // Each column's edge wobbles by one row now and then and sometimes breaks, so the lines are not flat
+  // planks. Clods are sprinkled on the base colour. Rows wrap at 16, so the tile repeats seamlessly.
+  function furrows(g, base, dark, light, clod, rate) {
     fillAll(g, base);
-    for (var y = 0; y < 16; y++) {
-      var band = y % 4;
-      for (var x = 0; x < 16; x++) {
-        if (band === 2) g[y][x] = dark;
-        else if (band === 3) g[y][x] = light;
-        else if (speck && noise(x, y, 7) < rate) g[y][x] = speck;
-      }
+    for (var k = 0; k < 4; k++) for (var x = 0; x < 16; x++) {
+      var w = noise(x, k, 11);
+      var r = 4 * k + 1 + (w < 0.1 ? -1 : (w > 0.9 ? 1 : 0));
+      if (noise(x, k, 12) > 0.08) g[r][x] = light;
+      g[r + 1][x] = dark;
+    }
+    for (var y = 0; y < 16; y++) for (var cx = 0; cx < 16; cx++) {
+      if (g[y][cx] === base && noise(cx, y, 7) < rate) g[y][cx] = clod;
     }
   }
   // Vertical plank pattern (period 4 horizontally).
@@ -118,11 +121,12 @@
       g[y][x] = m === 0 ? dark : (m === 1 ? light : mid);
     }
   }
-  // Seed mound for stage 0 crops.
+  // Seed mound for stage 0 crops: a light-brown heap with bright seeds on top.
   function seedMound(g, dot) {
-    rect(g, 5, 14, 10, 14, 'h');
-    rect(g, 6, 13, 9, 13, 'e');
-    px(g, 7, 12, dot); px(g, 9, 12, dot); px(g, 8, 11, dot);
+    rect(g, 7, 12, 8, 12, 'f');
+    rect(g, 6, 13, 9, 13, 'f');
+    rect(g, 5, 14, 10, 14, 'e');
+    px(g, 6, 12, dot); px(g, 9, 12, dot); px(g, 8, 11, dot);
   }
 
   // ================= GROUND TILES (no outline, tile seamlessly) =================
@@ -163,11 +167,15 @@
   def('tile_soil', g);
 
   g = blank();
-  furrows(g, 'u', 'v', 'x', null, 0);
+  furrows(g, 'u', 'v', 'x', 'L', 0.07);
   def('tile_tilled', g);
 
   g = blank();
-  furrows(g, 'm', 'n', 'z', 'z', 0.05);
+  furrows(g, 'm', 'n', 'z', 'd', 0.06);
+  // Dark puddle spots.
+  [[2, 6], [9, 3], [12, 10], [5, 13]].forEach(function (p) {
+    px(g, p[0], p[1], 'n'); px(g, p[0] + 1, p[1], 'n');
+  });
   def('tile_watered', g);
 
   // Pond: blue water with light wave crests.
@@ -370,84 +378,125 @@
   outline(g);
   def('obj_shop', g);
 
-  // ================= CROPS (transparent, drawn over tilled soil) =================
+  // ================= CROPS (transparent, outlined, drawn over tilled soil) =================
+  // Crops are written as text rows: y0 is the top row, '.' is transparent. Bases sit on rows 13-15.
+  function art(y0, rows) {
+    var a = blank();
+    for (var r = 0; r < rows.length; r++) for (var x = 0; x < 16; x++) {
+      var c = rows[r].charAt(x);
+      if (c !== '.') a[y0 + r][x] = c;
+    }
+    outline(a);
+    return a;
+  }
+  // Stage 0 (all crops): seed mound with bright dots, outlined.
   function cropStage0(dot) {
     var c = blank();
     seedMound(c, dot);
+    outline(c);
     return c;
   }
-  function sprout(c, leaf, stem) {
-    rect(c, 7, 11, 7, 14, stem);
-    rect(c, 8, 12, 8, 14, stem);
-    px(c, 6, 11, leaf); px(c, 9, 11, leaf); px(c, 7, 10, leaf);
-  }
+  // Stage 1 (all crops): two bright leaves in a V over a short stem.
+  var SPROUT = [
+    '....lg....gl....',
+    '.....gl..lg.....',
+    '......gGGg......',
+    '.......GG.......',
+    '.......GG.......'
+  ];
 
   // Wheat
   def('crop_wheat_0', cropStage0('K'));
-  g = blank(); sprout(g, 'l', 'G'); def('crop_wheat_1', g);
-  g = blank();
-  var sx;
-  for (i = 0; i < 4; i++) {
-    sx = 5 + i * 2;
-    rect(g, sx, 9, sx, 14, 'G');
-    px(g, sx - 1, 11, 'l'); px(g, sx + 1, 12, 'l');
-  }
-  def('crop_wheat_2', g);
-  g = blank();
-  for (i = 0; i < 4; i++) {
-    sx = 5 + i * 2;
-    rect(g, sx, 7, sx, 14, 'Z');
-    rect(g, sx, 3, sx, 6, 'Y');
-    px(g, sx, 3, 'K');
-  }
-  px(g, 4, 12, 'G'); px(g, 12, 12, 'G');
-  def('crop_wheat_3', g);
+  def('crop_wheat_1', art(10, SPROUT));
+  def('crop_wheat_2', art(6, [
+    '.......ll.......',
+    '.....lllgll.....',
+    '.....lglglg.....',
+    '...lllglglgll...',
+    '...lglglglglg...',
+    '...glglglglgl...',
+    '...gGgGgGgGgG...',
+    '...gGgGgGgGgG...',
+    '...GGGGGGGGGG...'
+  ]));
+  def('crop_wheat_3', art(2, [
+    '.......KK.......',
+    '.....KKYZKK.....',
+    '...KKYZYZYZKK...',
+    '...YZYZYZYZYZ...',
+    '...YZYZYZYZYZ...',
+    '...ZZZZZZZZZZ...',
+    '....Z.Z.Z.Z.....',
+    '...GZ.Z.Z.ZG....',
+    '...GZ.Z.Z.ZG....',
+    '.....GZZZZG.....',
+    '.....gGZZGg.....',
+    '......gGGg......',
+    '.......GG.......'
+  ]));
 
   // Corn
   def('crop_corn_0', cropStage0('y'));
-  g = blank(); sprout(g, 'l', 'G'); rect(g, 7, 9, 8, 10, 'G'); def('crop_corn_1', g);
-  g = blank();
-  rect(g, 7, 5, 8, 14, 'G');
-  px(g, 5, 10, 'l'); px(g, 6, 9, 'l'); px(g, 9, 8, 'l'); px(g, 10, 10, 'l');
-  px(g, 9, 9, 'y');
-  def('crop_corn_2', g);
-  g = blank();
-  rect(g, 7, 1, 8, 15, 'G');
-  rect(g, 7, 1, 7, 15, 'l');
-  rect(g, 4, 9, 6, 9, 'l'); px(g, 5, 10, 'l'); px(g, 6, 10, 'l');
-  rect(g, 9, 6, 10, 6, 'l'); px(g, 9, 7, 'l'); px(g, 10, 7, 'l');
-  rect(g, 9, 7, 10, 10, 'y');      // upper cob
-  px(g, 11, 8, 'l'); px(g, 11, 9, 'l'); px(g, 8, 8, 'l');
-  rect(g, 4, 8, 5, 11, 'y');       // lower cob
-  px(g, 3, 9, 'l'); px(g, 3, 10, 'l');
-  def('crop_corn_3', g);
+  def('crop_corn_1', art(10, SPROUT));
+  def('crop_corn_2', art(6, [
+    '.......lg.......',
+    '.......gG.......',
+    '....gllGGllg....',
+    '...gllgGGgllg...',
+    '....glgGGglg....',
+    '.....ggGGgg.....',
+    '....gGGGGGGg....',
+    '.......GG.......',
+    '.......GG.......'
+  ]));
+  def('crop_corn_3', art(1, [
+    '.......Z........',
+    '.......gG.......',
+    '......ggGg......',
+    '.....glgGg......',
+    '....glggGYyyg...',
+    '...glgggGYyyg...',
+    '.......gGYyyg...',
+    '.......gGgyyg...',
+    '....gyygGgl.....',
+    '...gYyygGgl.....',
+    '...gYyygGgl.....',
+    '....gygGGg......',
+    '.....gGGG.......',
+    '.......GG.......'
+  ]));
 
   // Carrot
   def('crop_carrot_0', cropStage0('l'));
-  g = blank();
-  px(g, 7, 12, 'G'); px(g, 7, 13, 'G'); px(g, 6, 11, 'g'); px(g, 8, 11, 'g');
-  def('crop_carrot_1', g);
-  g = blank();
-  for (y = 7; y <= 11; y++) {
-    var half = Math.floor((y - 5) / 2) + 1;
-    rect(g, 7 - half + 1, y, 8 + half - 1, y, 'g');
-    px(g, 7 - half + 1, y, 'l');
-  }
-  px(g, 7, 13, 'G'); px(g, 8, 13, 'G');
-  def('crop_carrot_2', g);
-  g = blank();
-  for (y = 2; y <= 7; y++) {
-    var h2 = Math.floor((y - 1) / 2) + 1;
-    rect(g, 8 - h2, y, 7 + h2, y, 'g');
-    px(g, 8 - h2, y, 'l');
-  }
-  for (y = 8; y <= 11; y++) {
-    var w = 3 - (y - 8);
-    if (w > 0) rect(g, 8 - w, y, 7 + w, y, '&');
-  }
-  rect(g, 7, 12, 8, 12, '&');
-  px(g, 6, 9, 'y');
-  def('crop_carrot_3', g);
+  def('crop_carrot_1', art(10, SPROUT));
+  def('crop_carrot_2', art(6, [
+    '.......l........',
+    '......lgl.......',
+    '.....glglg......',
+    '....lglglgl.....',
+    '....glgGglg.....',
+    '.....glglg......',
+    '......gGg.......',
+    '.......G........',
+    '.......G........'
+  ]));
+  def('crop_carrot_3', art(1, [
+    '.......ll.......',
+    '......gllg......',
+    '.....glGGlg.....',
+    '....glgGGglg....',
+    '...glglGGlglg...',
+    '...gglgGGglgg...',
+    '....glgGGglg....',
+    '....gglGGlgg....',
+    '.....glGGlg.....',
+    '......gGGg......',
+    '......&&&X......',
+    '.....&&&&&X.....',
+    '.....&&&&XX.....',
+    '......&&&X......',
+    '.......XX.......'
+  ]));
 
   // ================= ITEMS (transparent, outlined, ~10-12px) =================
   // Golden wheat bundle tied with twine.
