@@ -150,9 +150,11 @@ Farm.Animals = (function () {
       var a = st.animals[i];
       var dx = x - a.x, dy = y - (a.y - 6);
       var d = Math.sqrt(dx * dx + dy * dy);
-      if (d <= r && d < bestD) {
+      // Animals carrying a product are preferred when several are in reach.
+      var score = a.hasProduct ? d - r : d;
+      if (d <= r && score < bestD) {
         best = a;
-        bestD = d;
+        bestD = score;
       }
     }
     return best;

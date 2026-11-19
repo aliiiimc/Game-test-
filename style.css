@@ -147,8 +147,8 @@ body {
   position: absolute;
   top: 40px;
   right: 6px;
-  bottom: 100px;
-  width: 150px;
+  max-height: calc(100% - 150px);
+  width: 220px;
   overflow-y: auto;
   font-size: 18px;
 }
@@ -168,7 +168,7 @@ body {
 }
 
 .task .check { flex: none; width: 14px; }
-.task-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.task-label { flex: 1; min-width: 0; overflow-wrap: break-word; }
 .task .reward { flex: none; color: var(--gold); font-size: 16px; }
 .task.done { text-decoration: line-through; opacity: 0.65; }
 .task.empty { opacity: 0.75; display: block; }
