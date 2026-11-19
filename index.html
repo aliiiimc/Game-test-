@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ferme Pixel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game">
+    <canvas id="screen" width="480" height="320"></canvas>
+    <div id="ui"></div>
+  </div>
+
+  <!-- Load order matters: see ARCHITECTURE.md -->
+  <script src="js/config.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/sprites_world.js"></script>
+  <script src="js/sprites_animals.js"></script>
+  <script src="js/world.js"></script>
+  <script src="js/animals.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/interact.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
