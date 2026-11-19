@@ -16,7 +16,7 @@
     // tilled soil
     'u': '#5a3a22', 'v': '#3a2516', 'x': '#7a5230',
     // watered soil
-    'm': '#4a3f3e', 'n': '#2e2729', 'z': '#6f8fa0',
+    'm': '#4b2f1c', 'n': '#2f1d11', 'z': '#6a4a33',
     // water
     'W': '#3d8fd6', 'I': '#8fd3f5', 'D': '#2a6aa8',
     // straw and hay, wheat

@@ -170,13 +170,14 @@ Farm.Interact = (function () {
 
     var pt = Farm.Player.getFacingPoint();
     var animal = Farm.Animals.findNear(pt.x, pt.y, 12);
-    if (animal) {
+    var tile = Farm.Player.getFacingTile();
+    var obj = Farm.World.getObjectAt(tile.tx, tile.ty);
+    // Collecting a product wins; otherwise a facing object (e.g. trough) wins over petting.
+    if (animal && (animal.hasProduct || !obj)) {
       interactAnimal(s, animal);
       return;
     }
 
-    var tile = Farm.Player.getFacingTile();
-    var obj = Farm.World.getObjectAt(tile.tx, tile.ty);
     if (obj) {
       interactObject(s, obj);
       return;
