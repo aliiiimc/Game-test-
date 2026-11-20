@@ -3,7 +3,7 @@ import { COLORS, TEXTS, TIMINGS, sec } from "../config";
 import { SceneContainer } from "../components/SceneContainer";
 import { WordReveal } from "../components/WordReveal";
 import { clamp01, fadeIn, pop, shake } from "../lib/anim";
-import { formatFr } from "../lib/format";
+import { formatNum } from "../lib/format";
 
 const BAR_H = 360;
 
@@ -46,7 +46,7 @@ export const Scene6Valuation: React.FC = () => {
             overflow: "hidden",
           }}
         >
-          {showValue && h > 0.5 ? `${t.prefix}${formatFr(t.value)}\u00A0Md$` : ""}
+          {showValue && h > 0.5 ? `${t.prefix}${t.currency}${formatNum(t.value, t.decimals)}${t.short}` : ""}
         </div>
       </div>
       <div style={{ fontSize: 40, fontWeight: 800 }}>{label}</div>
@@ -71,7 +71,8 @@ export const Scene6Valuation: React.FC = () => {
         }}
       >
         <span style={{ color: COLORS.accent }}>{t.prefix}</span>
-        {formatFr(Math.round(v / 10) * 10)}
+        {t.currency}
+        {formatNum(v, t.decimals)}
       </div>
       <div style={{ fontSize: 80, fontWeight: 800, marginTop: -4 }}>{t.unit}</div>
 

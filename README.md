@@ -1,7 +1,7 @@
 # Reel Instagram : IPO record d'Anthropic (Remotion)
 
-Vidéo verticale 1080x1920, 30 fps, 32 s, en français.
-Collaboration CGI ENSA Marrakech x [Club finance].
+Vidéo verticale 1080x1920, 30 fps, 32 s, en anglais.
+Collaboration CGI x Finova.
 
 ## Commandes
 
@@ -23,7 +23,7 @@ Tout est dans **`src/config.ts`** :
 |---|---|
 | `SCENE_DURATIONS` | durée de chaque scène (secondes) |
 | `VOICEOVER` | texte + début/fin de chaque phrase dans `voiceover.mp3` (sous-titres et baisse de la musique) |
-| `TEXTS`, `CLUB_NAME` | tous les textes à l'écran |
+| `TEXTS`, `COLLAB` | tous les textes à l'écran, nom des clubs |
 | `COLORS` | palette |
 | `AUDIO` | volumes, ducking, fondus, décalage des whoosh |
 | `TIMINGS` | timings internes des animations |
@@ -37,7 +37,7 @@ Tout est dans **`src/config.ts`** :
 | `music.mp3` | musique de fond (30 %, 10 % sous la voix, fondus entrée/sortie) |
 | `whoosh.mp3` | à chaque transition de scène |
 | `tick.mp3` | en boucle pendant le compteur de la scène 3 |
-| `impact.mp3` | sur « 93,5 milliards » et « Bulle ou révolution ? » |
+| `impact.mp3` | sur « $93.5 billion » et « Bubble or revolution? » |
 
 Les fichiers fournis sont vides. Un fichier absent, vide ou illisible est
 ignoré automatiquement (détection dans `src/lib/audio-probe.ts`) : la vidéo se

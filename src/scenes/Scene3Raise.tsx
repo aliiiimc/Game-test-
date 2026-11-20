@@ -3,7 +3,7 @@ import { COLORS, TEXTS, TIMINGS, sec } from "../config";
 import { SceneContainer } from "../components/SceneContainer";
 import { WordReveal } from "../components/WordReveal";
 import { clamp01, fadeIn, pop, shake } from "../lib/anim";
-import { formatFr } from "../lib/format";
+import { money } from "../lib/format";
 
 export const Scene3Raise: React.FC = () => {
   const frame = useCurrentFrame();
@@ -49,7 +49,7 @@ export const Scene3Raise: React.FC = () => {
         ) : null}
         <div
           style={{
-            fontSize: 290,
+            fontSize: 250,
             fontWeight: 900,
             lineHeight: 1,
             letterSpacing: -10,
@@ -59,7 +59,7 @@ export const Scene3Raise: React.FC = () => {
             textShadow: landed ? "0 0 60px rgba(255,107,44,0.45)" : "none",
           }}
         >
-          {formatFr(value, t.decimals)}
+          {money(value, t.decimals)}
         </div>
         <div style={{ fontSize: 92, fontWeight: 800, color: COLORS.white, marginTop: -6 }}>{t.unit}</div>
       </div>

@@ -2,7 +2,7 @@ import { Easing, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, TEXTS, TIMINGS, sec } from "../config";
 import { SceneContainer } from "../components/SceneContainer";
 import { clamp01, pop, shake } from "../lib/anim";
-import { formatFr } from "../lib/format";
+import { money } from "../lib/format";
 
 /** Positions des bulles (centre x, y et rayon) dans une zone 960 × 760. */
 const LAYOUT = [
@@ -112,7 +112,7 @@ export const Scene4Investors: React.FC = () => {
             whiteSpace: "nowrap",
           }}
         >
-          {formatFr(totalVal, 1)} <span style={{ color: COLORS.white, fontSize: 70 }}>{t.totalUnit}</span>
+          {money(totalVal, 1)} <span style={{ color: COLORS.white, fontSize: 70 }}>{t.totalUnit}</span>
         </div>
       </div>
     </SceneContainer>

@@ -2,7 +2,7 @@ import { interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { COLORS, TEXTS, TIMINGS, sec } from "../config";
 import { SceneContainer } from "../components/SceneContainer";
 import { clamp01, pop, shake } from "../lib/anim";
-import { formatFr } from "../lib/format";
+import { money } from "../lib/format";
 
 const W = 960;
 const H = 560;
@@ -91,9 +91,9 @@ export const Scene5FirstDay: React.FC = () => {
   const headerIn = pop(frame, fps, 2);
 
   const stats = [
-    { label: t.ipoLabel, value: `${formatFr(t.ipoPrice)} $`, delta: "", at: start - 4 },
-    { label: t.openLabel, value: `${formatFr(t.openPrice, 2)} $`, delta: `+${pct(t.openPrice)} %`, at: openFrame },
-    { label: t.closeLabel, value: `${formatFr(t.closePrice, 2)} $`, delta: `+${pct(t.closePrice)} %`, at: end },
+    { label: t.ipoLabel, value: `${money(t.ipoPrice)}`, delta: "", at: start - 4 },
+    { label: t.openLabel, value: `${money(t.openPrice, 2)}`, delta: `+${pct(t.openPrice)}%`, at: openFrame },
+    { label: t.closeLabel, value: `${money(t.closePrice, 2)}`, delta: `+${pct(t.closePrice)}%`, at: end },
   ];
 
   return (
@@ -122,7 +122,7 @@ export const Scene5FirstDay: React.FC = () => {
         >
           {livePct >= 0 ? "+" : ""}
           {livePct}
-          {" %"}
+          {"%"}
         </span>
       </div>
 
@@ -166,13 +166,13 @@ export const Scene5FirstDay: React.FC = () => {
           </text>
         </svg>
 
-        <Label x={PAD.l + 120} y={yOf(t.ipoPrice) + 14} show={ipoShow} title={t.ipoLabel} value={`${formatFr(t.ipoPrice)} $`} />
+        <Label x={PAD.l + 120} y={yOf(t.ipoPrice) + 14} show={ipoShow} title={t.ipoLabel} value={`${money(t.ipoPrice)}`} />
         <Label
           x={xOf(OPEN_U) + 30}
           y={yOf(t.openPrice) - 34}
           show={openShow}
           title={t.openLabel}
-          value={`${formatFr(t.openPrice, 2)} $ (+${pct(t.openPrice)} %)`}
+          value={`${money(t.openPrice, 2)} (+${pct(t.openPrice)}%)`}
           accent
         />
         <Label
@@ -181,7 +181,7 @@ export const Scene5FirstDay: React.FC = () => {
           show={closeShow}
           align="right"
           title={t.closeLabel}
-          value={`${formatFr(t.closePrice, 2)} $ (+${pct(t.closePrice)} %)`}
+          value={`${money(t.closePrice, 2)} (+${pct(t.closePrice)}%)`}
           accent
         />
       </div>
