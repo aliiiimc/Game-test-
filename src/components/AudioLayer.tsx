@@ -107,6 +107,12 @@ export const AudioLayer: React.FC<{ audio: AudioAvailability }> = ({ audio }) =>
             volume={AUDIO.impact.volume}
           />
           <SFX
+            name="Impact chute -36 %"
+            file={AUDIO_FILES.impact}
+            at={sec(sceneStartSeconds("drop") + TIMINGS.drop.counterStart + TIMINGS.drop.counterDuration)}
+            volume={AUDIO.impact.volume}
+          />
+          <SFX
             name="Impact Bulle ou révolution"
             file={AUDIO_FILES.impact}
             at={sec(outroStart + TIMINGS.outro.questionAt)}

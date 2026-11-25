@@ -1,6 +1,6 @@
 # Reel Instagram : IPO record d'Anthropic (Remotion)
 
-Vidéo verticale 1080x1920, 30 fps, 32 s, en anglais.
+Vidéo verticale 1080x1920, 30 fps, 42 s, en anglais.
 Collaboration CGI x Finova.
 
 ## Commandes

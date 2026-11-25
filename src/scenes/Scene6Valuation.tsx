@@ -5,7 +5,7 @@ import { WordReveal } from "../components/WordReveal";
 import { clamp01, fadeIn, pop, shake } from "../lib/anim";
 import { formatNum } from "../lib/format";
 
-const BAR_H = 360;
+const BAR_H = 270;
 
 export const Scene6Valuation: React.FC = () => {
   const frame = useCurrentFrame();
@@ -27,7 +27,7 @@ export const Scene6Valuation: React.FC = () => {
   const a = grow(0);
   const b = grow(4);
 
-  const Bar: React.FC<{ h: number; label: string; color: string; textColor: string; showValue?: boolean }> = ({ h, label, color, textColor, showValue }) => (
+  const Bar: React.FC<{ h: number; label: string; color: string; textColor: string; text: string }> = ({ h, label, color, textColor, text }) => (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
       <div style={{ height: BAR_H, display: "flex", alignItems: "flex-end" }}>
         <div
@@ -46,7 +46,7 @@ export const Scene6Valuation: React.FC = () => {
             overflow: "hidden",
           }}
         >
-          {showValue && h > 0.5 ? `${t.prefix}${t.currency}${formatNum(t.value, t.decimals)}${t.short}` : ""}
+          {h > 0.25 ? text : ""}
         </div>
       </div>
       <div style={{ fontSize: 40, fontWeight: 800 }}>{label}</div>
@@ -60,7 +60,7 @@ export const Scene6Valuation: React.FC = () => {
       </div>
       <div
         style={{
-          fontSize: 230,
+          fontSize: 190,
           fontWeight: 900,
           lineHeight: 1,
           letterSpacing: -8,
@@ -76,14 +76,14 @@ export const Scene6Valuation: React.FC = () => {
       </div>
       <div style={{ fontSize: 80, fontWeight: 800, marginTop: -4 }}>{t.unit}</div>
 
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 60, marginTop: 50 }}>
-        <Bar h={a} showValue label={t.barA} color={COLORS.accent} textColor={COLORS.white} />
-        <div style={{ fontSize: 110, fontWeight: 900, color: COLORS.muted, marginBottom: 170, opacity: fadeIn(frame, barsAt + 8) }}>≈</div>
-        <Bar h={b} label={t.barB} color={COLORS.white} textColor={COLORS.bg} />
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 60, marginTop: 36 }}>
+        <Bar h={a * (t.barAValue / t.barBValue)} text={t.barAText} label={t.barA} color={COLORS.white} textColor={COLORS.bg} />
+        <div style={{ fontSize: 110, fontWeight: 900, color: COLORS.muted, marginBottom: 130, opacity: fadeIn(frame, barsAt + 8) }}>→</div>
+        <Bar h={b} text={t.barBText} label={t.barB} color={COLORS.accent} textColor={COLORS.white} />
       </div>
 
-      <div style={{ marginTop: 40 }}>
-        <WordReveal text={t.compare} highlight={t.compareHighlight} delay={barsAt + 10} stagger={3} fontSize={72} fontWeight={900} />
+      <div style={{ marginTop: 26 }}>
+        <WordReveal text={t.compare} highlight={t.compareHighlight} delay={barsAt + 10} stagger={3} fontSize={62} fontWeight={900} />
       </div>
       <div style={{ marginTop: 26, fontSize: 30, fontWeight: 600, color: COLORS.muted, opacity: fadeIn(frame, barsAt + 24, 10) }}>
         {t.note}

@@ -28,6 +28,7 @@ export const COLORS = {
   border: "rgba(255, 255, 255, 0.10)",
   grid: "rgba(255, 255, 255, 0.045)",
   subtitleBg: "rgba(14, 14, 16, 0.78)",
+  negative: "#FF4D4D",
 } as const;
 
 // ── Durées des scènes (en secondes) ─────────────────────────
@@ -38,8 +39,10 @@ export const SCENE_DURATIONS = {
   raise: 5, // 3. 93,5 Md$ levés
   investors: 5, // 4. Bulles investisseurs
   firstDay: 5, // 5. Courbe du premier jour
-  valuation: 4, // 6. Valorisation ~1 800 Md$
-  outro: 4, // 7. Bulle ou révolution ?
+  valuation: 4, // 6. Valorisation $1.76T
+  drop: 5, // 7. La chute sous le prix d'IPO
+  why: 5, // 8. Pourquoi ça a chuté
+  outro: 4, // 9. Bulle ou révolution ?
 } as const;
 
 export type SceneId = keyof typeof SCENE_DURATIONS;
@@ -51,6 +54,8 @@ export const SCENE_ORDER: SceneId[] = [
   "investors",
   "firstDay",
   "valuation",
+  "drop",
+  "why",
   "outro",
 ];
 
@@ -91,7 +96,17 @@ export const VOICEOVER: Record<
   valuation: {
     start: 0.2,
     end: 3.6,
-    text: "Company value: about $1.8 trillion.",
+    text: "Day-one value: $1.76 trillion, nearly double May's valuation.",
+  },
+  drop: {
+    start: 0.2,
+    end: 4.2,
+    text: "Then came the fall: below its $83 IPO price by day four.",
+  },
+  why: {
+    start: 0.2,
+    end: 4.6,
+    text: "Why? Profit-taking, no more bank support, an AI sell-off and a sky-high price.",
   },
   outro: {
     start: 0.2,
@@ -158,19 +173,48 @@ export const TEXTS = {
     timeEnd: "4:00 PM",
   },
   valuation: {
-    label: "VALUATION",
-    prefix: "~",
+    label: "VALUATION AT DAY-ONE CLOSE",
+    prefix: "",
     currency: "$",
-    value: 1.8,
-    decimals: 1,
+    value: 1.76,
+    decimals: 2,
     unit: "trillion",
-    /** Suffixe court affiché sur la barre (ex. « ~$1.8T »). */
-    short: "T",
-    compare: "on par with Meta",
-    compareHighlight: ["Meta"],
-    barA: "Anthropic",
-    barB: "Meta",
+    compare: "nearly 2× its May valuation",
+    compareHighlight: ["2×"],
+    /** Barre A : valorisation privée de mai 2026 (Series H). */
+    barA: "May 2026",
+    barAValue: 0.965,
+    barAText: "$965B",
+    /** Barre B : valorisation à la clôture du 1er jour. */
+    barB: "Day one",
+    barBValue: 1.76,
+    barBText: "$1.76T",
     note: "Valuation = share price × number of shares",
+  },
+  drop: {
+    title: "Then came the drop",
+    change: -36, // vs plus haut du 1er jour
+    changeCaption: "vs. day-one high ($114.99)",
+    ipoPrice: 83,
+    ipoLabel: "IPO price $83",
+    /** Cours de clôture (sauf * = cours intrajournalier). */
+    bars: [
+      { label: "Nov 19", value: 97.17 },
+      { label: "Nov 20", value: 88.91 },
+      { label: "Nov 24", value: 81.91 },
+      { label: "Nov 25*", value: 74 },
+    ],
+    footnote: "- - - IPO price $83 · Closing prices · *Nov 25: intraday",
+    caption: "Below the IPO price on day 4",
+  },
+  why: {
+    title: "Why the fall?",
+    reasons: [
+      { title: "Profit-taking", detail: "Early buyers cashed in after the +34% pop" },
+      { title: "Safety net gone", detail: "Banks used the greenshoe on day 1: no buyer left at $83" },
+      { title: "AI sell-off", detail: "Tech stocks retreated: Nasdaq -2.3% on day one" },
+      { title: "Steep price tag", detail: "~30× sales: investors question the valuation" },
+    ],
   },
   outro: {
     word1: "Bubble",
@@ -223,6 +267,8 @@ export const TIMINGS = {
   },
   firstDay: { chartStart: 0.4, chartDuration: 2.8 },
   valuation: { counterStart: 0.2, counterDuration: 1.4, barsAt: 1.7 },
+  drop: { counterStart: 0.3, counterDuration: 1.2, barsStart: 0.6, barStagger: 0.35 },
+  why: { cardsStart: 0.5, cardStagger: 0.9 },
   outro: { questionAt: 0.15, ctaAt: 1.7, collabAt: 2.4 },
   transitionFrames: 10,
 };

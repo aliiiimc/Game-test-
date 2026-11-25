@@ -14,6 +14,8 @@ import { Scene4Investors } from "./scenes/Scene4Investors";
 import { Scene5FirstDay } from "./scenes/Scene5FirstDay";
 import { Scene6Valuation } from "./scenes/Scene6Valuation";
 import { Scene7Outro } from "./scenes/Scene7Outro";
+import { SceneDrop } from "./scenes/SceneDrop";
+import { SceneWhy } from "./scenes/SceneWhy";
 
 const SCENES: Record<SceneId, React.FC> = {
   intro: Scene1Intro,
@@ -22,6 +24,8 @@ const SCENES: Record<SceneId, React.FC> = {
   investors: Scene4Investors,
   firstDay: Scene5FirstDay,
   valuation: Scene6Valuation,
+  drop: SceneDrop,
+  why: SceneWhy,
   outro: Scene7Outro,
 };
 
